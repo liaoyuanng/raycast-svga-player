@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVGA Player</title>
+    <script src="https://cdn.jsdelivr.net/npm/svgaplayerweb@2.3.1/build/svga.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        #showMsg {
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        #canvas {
+            background-color: #000;
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <div id="showMsg">Loading...</div>
+    <div id="canvas"></div>
+    <script>
+        window.onload = function() {
+            var player = new SVGA.Player('#canvas');
+            var parser = new SVGA.Parser('#canvas');
+            var src_url = "___src_url___";
+            document.getElementById('showMsg').innerHTML = "src_url: " + src_url;
+            if (!isRemoteUrl(src_url)) {
+                document.getElementById('showMsg').innerHTML = "src_url is not remote url: " + src_url;
+                if (src_url.endsWith(".svga")) {
+                    document.getElementById('showMsg').innerHTML = "src_url is svga file: " + src_url;
+                    fetch(src_url)
+                        .then(response => response.blob())
+                        .then(blob => {
+                            var reader = new FileReader();
+                            reader.readAsDataURL(blob);
+                            reader.onload = function(e) {
+                                document.getElementById('showMsg').innerHTML = "Read done..." + e.target.result;
+                                src_url = e.target.result;
+                                loadSvga(src_url);
+                            }
+                            reader.onerror = function(e) {
+                                document.getElementById('canvas').innerHTML = "<h1>Error: " + e.target.error + "</h1>";
+                            }
+                        })
+                        .catch(error => {
+                            document.getElementById('canvas').innerHTML = "<h1>Error: 无法加载文件 - " + error.message + "</h1>";
+                        });
+                } else {
+                    document.getElementById('canvas').innerHTML = "<h1>Error: " + src_url + " is not a svga file</h1>";
+                }
+            } else {
+                loadSvga(src_url);
+            }
+        }
+
+        function isRemoteUrl(url) {
+            try {
+                const parsedUrl = new URL(url, window.location.origin);
+                return parsedUrl.origin !== window.location.origin;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        function loadSvga(src_url) {
+            parser.load(src_url, function(videoItem) {
+                
+                var width = videoItem.videoSize.width;
+                var height = videoItem.videoSize.height;
+                
+                document.getElementById('canvas').style.width = width + 'px';
+                document.getElementById('canvas').style.height = height + 'px';
+                
+                player.setVideoItem(videoItem);
+                player.startAnimation();
+            });
+        }
+    </script>
+</body>
+</html>
