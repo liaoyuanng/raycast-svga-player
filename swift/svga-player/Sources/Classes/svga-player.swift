@@ -10,7 +10,7 @@ import RaycastSwiftMacros
     guard let resourceURL = resourceURL else {
         fatalError("resource url is empty!")
     }
-    delegate.resourceURL = resourceURL
+    delegate.resourceUrlString = resourceURL
     NSApplication.shared.delegate = delegate
     NSApplication.shared.run()
 }

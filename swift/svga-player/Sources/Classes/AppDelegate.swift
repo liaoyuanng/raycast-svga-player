@@ -11,7 +11,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate  {
 
     var window: FloatingWindow!
     var eventMonitor: Any?
-    var resourceURL: String?
+    var resourceUrlString: String?
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         guard let screen = NSScreen.main else { return }
@@ -25,6 +25,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate  {
         
         addEventMonitor()
         
+        NSApp.setActivationPolicy(.accessory)
         NSApp.activate(ignoringOtherApps: true)
     }
 

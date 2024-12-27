@@ -35,7 +35,7 @@ class SvgaPlaygroundView: NSView {
 
     private func loadWebView() {
 
-        guard let resourceURL = (NSApplication.shared.delegate as! AppDelegate).resourceURL else {
+        guard let resourceUrlString = (NSApplication.shared.delegate as! AppDelegate).resourceUrlString else {
             fatalError("resource url is nil!")
         }
         
@@ -45,13 +45,22 @@ class SvgaPlaygroundView: NSView {
         
         let bundleURL = URL(fileURLWithPath: bundlePath)
         let htmlFilePath = bundleURL.deletingLastPathComponent().deletingLastPathComponent().appendingPathComponent("index.html")
-        
-        do {
-            var htmlContent = try String(contentsOf: htmlFilePath, encoding: .utf8)
-            htmlContent = htmlContent.replacingOccurrences(of: "___src_url___", with: resourceURL)
-            webView.loadHTMLString(htmlContent, baseURL: nil)
-        } catch {
-            fatalError("Error reading HTML file: \(error). Looked for file at: \(htmlFilePath.path)")
+        if let resourceURL = URL(string: resourceUrlString) {
+            var replaceContent = resourceUrlString
+            if resourceURL.isFileURL {
+                guard let svgaData = try? Data(contentsOf: resourceURL) else {
+                    fatalError("Can not read file content!")
+                }
+                let base64String = svgaData.base64EncodedString()
+                replaceContent = "data:svga/2.0;base64," + base64String
+            }
+            do {
+                var htmlContent = try String(contentsOf: htmlFilePath, encoding: .utf8)
+                htmlContent = htmlContent.replacingOccurrences(of: "___svga_src___", with: replaceContent)
+                webView.loadHTMLString(htmlContent, baseURL: nil)
+            } catch {
+                fatalError("Error reading HTML file: \(error). Looked for file at: \(htmlFilePath.path)")
+            }
         }
     }
 }
