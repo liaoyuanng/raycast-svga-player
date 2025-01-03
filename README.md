@@ -2,6 +2,8 @@
 
 Play SVGA animations with ease
 
+### **💬 The Play SVGA plugin is available for Raycast. To use it, you’ll need to install the Raycast app first.**
+
 # How to use
 
 ## Step 1: Configure the Shortcut Key
