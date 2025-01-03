@@ -6,11 +6,11 @@ Play SVGA animations with ease
 
 # How to use
 
-## Step 1: Configure the Shortcut Key
+## Step 1: Configure the shortcut key
 
 Configure the SVGA player extension and set up a shortcut key as you like.
 
-## Step 2: Play Animations
+## Step 2: Play animations
 
 you can play animations by:
 
@@ -28,4 +28,4 @@ you can play animations by:
 
 _Enjoy!_
 
-**Note:** Only SVGA Version 2.0 is supported.
+**Note:** Only SVGA version 2.0 is supported.
